@@ -58,6 +58,10 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
             );
     }
 
+    /**
+     * @param _proof will be the hex value of proof with the give caller address generated from the merkle tree.
+     * @param _tokenUriIndex will be the index number of NFT Uri select by the user.
+     */
     function preMintNFT(
         bytes32[] memory _proof,
         uint8 _tokenUriIndex
