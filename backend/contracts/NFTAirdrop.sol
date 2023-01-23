@@ -46,6 +46,9 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
         tokenCounter = 0;
     }
 
+    /**
+     * @param _proof will be the hex value of proof with the give caller address generated from the merkle tree.
+     */
     function verify(bytes32[] memory _proof) private view returns (bool) {
         return
             MerkleProof.verify(
