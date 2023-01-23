@@ -82,6 +82,24 @@ import { keccak256 } from "ethers/lib/utils";
                       .to.be.emit(nftAirdrop, "NFTMinted")
                       .withArgs(deployer, 0);
               });
+
+              it("should revert on twice minting.", async () => {
+                  // * convert the address to hash address of kaccek256.
+                  const hashAddress = keccak256(deployer); // * deployer is the valid address
+
+                  // * get the proof of hash address.
+                  const proof = tree.getHexProof(hashAddress);
+
+                  // * mint nft.
+                  await nftAirdrop.preMintNFT(proof, NFT_INDEX);
+
+                  await expect(nftAirdrop.preMintNFT(proof, NFT_INDEX))
+                      .to.be.revertedWithCustomError(
+                          nftAirdrop,
+                          "NFTAirdrop__NFTAlreadyMinted"
+                      )
+                      .withArgs(deployer);
+              });
           });
 
           describe("getTokenId", () => {
