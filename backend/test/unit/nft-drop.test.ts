@@ -47,6 +47,28 @@ import { keccak256 } from "ethers/lib/utils";
                       )
                       .withArgs(addr2.address);
               });
+
+              it("should mint nft for valid proof.", async () => {
+                  // * convert the address to hash address of kaccek256.
+                  const hashAddress = keccak256(deployer); // * deployer is the valid address
+
+                  // * get the proof of hash address.
+                  const proof = tree.getHexProof(hashAddress);
+
+                  // * mint nft.
+                  await nftAirdrop.preMintNFT(proof, NFT_INDEX);
+
+                  // * address => value should be true after mint.
+                  const response = await nftAirdrop.addressToNFTMinted(
+                      deployer
+                  );
+
+                  expect(response).to.be.true;
+
+                  // * token id should be updated to 1 now.
+                  const tokenId = await nftAirdrop.getTokenId();
+                  expect(tokenId).to.be.equal("1");
+              });
           });
 
           describe("getTokenId", () => {
