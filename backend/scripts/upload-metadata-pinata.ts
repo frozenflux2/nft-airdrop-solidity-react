@@ -13,7 +13,7 @@ const metadataTemplate = {
     attributes: [
         {
             trait_type: "Base",
-            value: "Dog",
+            value: "Cat",
         },
         {
             trait_type: "Eyes",
@@ -25,7 +25,7 @@ const metadataTemplate = {
         },
         {
             trait_type: "Personality",
-            value: "Shy",
+            value: "Happy",
         },
         {
             trait_type: "Level",
@@ -54,6 +54,7 @@ async function updateMetadata(): Promise<void> {
     // * upload metadata to pinata
     try {
         const response = await pinata.pinJSONToIPFS(nftMetadata, {
+            // * specify the name of the metadata file for pinata dashboard.
             pinataMetadata: { name: "" },
         });
         console.log(response);
