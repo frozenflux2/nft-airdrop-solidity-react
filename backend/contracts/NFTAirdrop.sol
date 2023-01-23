@@ -28,6 +28,13 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
         uint256 indexed value
     );
 
+    // * FUNCTIONS
+    /**
+     * @param _root will be the root hash of the merkle tree.
+     * @param _name will be the name of the token.
+     * @param _symbol will be the symbol of the token.
+     * @param _nftTokenUris will be the token metadata ipfs hashes.
+     */
     constructor(
         bytes32 _root,
         string memory _name,
