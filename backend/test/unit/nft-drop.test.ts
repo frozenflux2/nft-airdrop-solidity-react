@@ -3,6 +3,7 @@ import { developmentChains } from "../../helper-hardhat-config";
 import { NFTAirdrop } from "../../typechain-types";
 import { generateMerkleTree } from "../../scripts/generate-merkle-tree";
 import MerkleTree from "merkletreejs";
+import { assert, expect } from "chai";
 
 // * if the newwork will be hardhat or localhost then these tests will be run.
 !developmentChains.includes(network.name)
@@ -22,5 +23,13 @@ import MerkleTree from "merkletreejs";
               nftAirdrop = await ethers.getContract("NFTAirdrop", deployer);
 
               tree = await generateMerkleTree();
+          });
+
+          describe("getTokenId", () => {
+              it("should get the token Id value", async () => {
+                  const tokenId = await nftAirdrop.getTokenId();
+
+                  assert(tokenId, "0");
+              });
           });
       });
