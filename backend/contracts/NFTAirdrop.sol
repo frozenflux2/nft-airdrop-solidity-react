@@ -8,13 +8,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 error NFTAirdrop__InsufficientMintFee(uint256 insufficientMintFee);
 error NFTAirdrop__NotInTheAllowlist(address caller);
-error NFTAirdrop__WithdrawTransactionFailed();
 
 contract NFTAirdrop is ERC721URIStorage, Ownable {
     // * STATE VARIABLES
     bytes32 public immutable root;
     string[] public nftTokenUris;
-    uint256 public immutable mintFee;
     uint256 public tokenCounter;
 
     // * EVENTS
@@ -34,12 +32,10 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
         bytes32 _root,
         string memory _name,
         string memory _symbol,
-        string[] memory _nftTokenUris,
-        uint256 _mintFee
+        string[] memory _nftTokenUris
     ) ERC721(_name, _symbol) {
         root = _root;
         nftTokenUris = _nftTokenUris;
-        mintFee = _mintFee;
         tokenCounter = 0;
     }
 
@@ -56,10 +52,6 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
         bytes32[] memory _proof,
         uint8 _tokenUriIndex
     ) external payable {
-        if (msg.value < mintFee) {
-            revert NFTAirdrop__InsufficientMintFee(msg.value);
-        }
-
         // * if not in the merkle tree.
         if (!verify(_proof)) {
             revert NFTAirdrop__NotInTheAllowlist(msg.sender);
