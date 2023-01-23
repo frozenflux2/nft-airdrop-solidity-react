@@ -10,9 +10,7 @@ const allowList = [
     "0x0000000000000000000000000000000000000006",
 ];
 
-export async function generateMerkleTree(
-    allowList: string[]
-): Promise<MerkleTree> {
+export async function generateMerkleTree(): Promise<MerkleTree> {
     const leaves = allowList.map((address) => keccak256(address));
     const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
@@ -22,5 +20,3 @@ export async function generateMerkleTree(
 
     return tree;
 }
-
-// generateMerkleTree(allowList);
