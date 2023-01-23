@@ -15,8 +15,8 @@ export async function generateMerkleTree(): Promise<MerkleTree> {
     const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
     const root = tree.getHexRoot();
-    console.log(`Merkle Root: `, root);
-    console.log(`Merkle Tree:\n`, tree.toString());
+    // console.log(`Merkle Root: `, root);
+    // console.log(`Merkle Tree:\n`, tree.toString());
 
     return tree;
 }
