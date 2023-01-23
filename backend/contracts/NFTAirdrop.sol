@@ -13,7 +13,7 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
     // * STATE VARIABLES
     bytes32 public immutable root;
     string[] public nftTokenUris;
-    uint256 public tokenCounter;
+    uint256 private tokenCounter;
 
     // * EVENTS
     /**
@@ -77,5 +77,9 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, nftTokenUris[_tokenUriIndex]);
         emit NFTMinted(msg.sender, tokenId, msg.value);
+    }
+
+    function getTokenId() external view returns (uint256) {
+        return tokenCounter;
     }
 }

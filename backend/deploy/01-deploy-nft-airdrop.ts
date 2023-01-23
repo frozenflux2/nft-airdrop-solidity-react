@@ -6,17 +6,7 @@ import verify from "../utils/verify";
 import { generateMerkleTree } from "../scripts/generate-merkle-tree";
 import MerkleTree from "merkletreejs";
 
-// * specify the addresses in the allowlist.
-const allowList = [
-    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-    "0x0000000000000000000000000000000000000002",
-    "0x0000000000000000000000000000000000000003",
-    "0x0000000000000000000000000000000000000004",
-    "0x0000000000000000000000000000000000000005",
-    "0x0000000000000000000000000000000000000006",
-];
-
-// * specify the nft metadata uris ipfs hashes.
+// * specify the nft metadata uris ipfs hashes. Read the README.md file to know more about it.
 const metadataIpfsHashes: string[] = [];
 
 const deployNFTAirdrop: DeployFunction = async (
@@ -26,15 +16,24 @@ const deployNFTAirdrop: DeployFunction = async (
     const { deployer } = await hre.getNamedAccounts();
     const chainId = network.config.chainId!;
 
-    const tree: MerkleTree = await generateMerkleTree(allowList);
+    // * generate the merkle tree of allowlist.
+    const tree: MerkleTree = await generateMerkleTree();
+
+    // * get the root of that tree.
     const root = tree.getHexRoot();
 
+    // * if metadata files list is empty then throw error.
     if (metadataIpfsHashes.length <= 0) {
         throw "Specify the hashes of the metadata files.";
     }
 
+    // * prefix the hashes with ipfs.
     const nftUris = metadataIpfsHashes.map((hash) => `ipfs://${hash}`);
+
+    // * specify the name of the NFT Collection.
     const nftName: string = "Digital Critters Collection";
+
+    // * specify the symbol of the NFT Collection.
     const nftSymbol: string = "DCC";
 
     const args = [root, nftName, nftSymbol, nftUris];
