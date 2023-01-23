@@ -23,4 +23,4 @@ export async function generateMerkleTree(
     return tree;
 }
 
-generateMerkleTree(allowList);
+// generateMerkleTree(allowList);
