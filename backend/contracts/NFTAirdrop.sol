@@ -79,6 +79,9 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
             revert NFTAirdrop__NotInTheAllowlist(msg.sender);
         }
 
+        // * update the mint status
+        addressToNFTMinted[msg.sender] = true;
+
         uint256 tokenId = tokenCounter;
         tokenCounter = tokenCounter + 1;
 
