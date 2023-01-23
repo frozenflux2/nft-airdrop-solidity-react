@@ -23,13 +23,8 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
      * @dev This event will be emitted inside mintNft function.
      * @param owner will be address who call the mintNft function.
      * @param tokenId will be the token id which user will have minted.
-     * @param value will be the amount on which NFT will be minted.
      */
-    event NFTMinted(
-        address indexed owner,
-        uint256 indexed tokenId,
-        uint256 indexed value
-    );
+    event NFTMinted(address indexed owner, uint256 indexed tokenId);
 
     // * FUNCTIONS
     /**
@@ -87,7 +82,7 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
 
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, nftTokenUris[_tokenUriIndex]);
-        emit NFTMinted(msg.sender, tokenId, msg.value);
+        emit NFTMinted(msg.sender, tokenId);
     }
 
     function getTokenId() external view returns (uint256) {
