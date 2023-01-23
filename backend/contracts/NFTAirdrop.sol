@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-error NFTAirdrop__InsufficientMintFee(uint256 insufficientMintFee);
+error NFTAirdrop__NFTAlreadyMinted(address caller);
 error NFTAirdrop__NotInTheAllowlist(address caller);
 
 contract NFTAirdrop is ERC721URIStorage, Ownable {
@@ -14,6 +14,9 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
     bytes32 public immutable root;
     string[] public nftTokenUris;
     uint256 private tokenCounter;
+
+    // * this mapping will keep track of whether the address minted the NFT or not.
+    mapping(address => bool) private addressToNFTMinted;
 
     // * EVENTS
     /**
@@ -66,6 +69,11 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
         bytes32[] memory _proof,
         uint8 _tokenUriIndex
     ) external payable {
+        // * if address already mintend nft then revert.
+        if (addressToNFTMinted[msg.sender]) {
+            revert NFTAirdrop__NFTAlreadyMinted(msg.sender);
+        }
+
         // * if not in the merkle tree.
         if (!verify(_proof)) {
             revert NFTAirdrop__NotInTheAllowlist(msg.sender);
