@@ -6,6 +6,7 @@ import { ConnectButton } from "@web3uikit/web3";
 import NFTSRow from "./Components/NFTSRow";
 import MintButton from "./Components/MintButton";
 import SwitchNetworkButton from "./Components/SwitchNetworkButton";
+import { generateMerkleTree } from "./utils/generate-merkle-tree";
 
 interface contractAddressesInterface {
     [key: string]: string[];
