@@ -3,14 +3,13 @@ import "./App.css";
 import { contractAddresses } from "./constants";
 import { useEffect } from "react";
 import { ConnectButton } from "@web3uikit/web3";
-import { networks } from "./constants/networks";
 import NFTSRow from "./Components/NFTSRow";
+import MintButton from "./Components/MintButton";
+import SwitchNetworkButton from "./Components/SwitchNetworkButton";
 
 interface contractAddressesInterface {
     [key: string]: string[];
 }
-
-const { ethereum } = window as any;
 
 function App() {
     const addresses: contractAddressesInterface = contractAddresses;
@@ -20,29 +19,6 @@ function App() {
         chainId in addresses ? addresses[chainId][0] : null;
 
     useEffect(() => {}, [isWeb3Enabled]);
-
-    async function handleOnSwitch() {
-        try {
-            await ethereum.request({
-                method: "wallet_switchEthereumChain",
-                params: [{ chainId: `0x${Number(5).toString(16)}` }],
-            });
-        } catch (switchError: any) {
-            // * This error code indicates that the chain has not been added to MetaMask.
-            if (switchError.code === 4902) {
-                try {
-                    await ethereum.request({
-                        method: "wallet_addEthereumChain",
-                        params: [
-                            {
-                                ...networks.goerli,
-                            },
-                        ],
-                    });
-                } catch (error) {}
-            }
-        }
-    }
 
     return (
         <div className="flex flex-col justify-start items-center h-screen">
@@ -66,19 +42,9 @@ function App() {
             <div className="mt-16 text-white">
                 {isWeb3Enabled ? (
                     nftContractAddress ? (
-                        <button
-                            onClick={() => {}}
-                            className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-24 py-4 text-xl text-white font-bold rounded-lg"
-                        >
-                            Mint
-                        </button>
+                        <MintButton />
                     ) : (
-                        <button
-                            onClick={handleOnSwitch}
-                            className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-8 py-4 text-lg text-white font-bold rounded-lg"
-                        >
-                            Switch to Goerli
-                        </button>
+                        <SwitchNetworkButton />
                     )
                 ) : (
                     <p>Connect your Wallet first</p>
