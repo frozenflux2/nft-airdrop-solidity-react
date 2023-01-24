@@ -1,4 +1,19 @@
+import { useEffect, useState } from "react";
+import { generateMerkleTree } from "../utils/generate-merkle-tree";
+import MerkleTree from "merkletreejs";
+
 function MintButton() {
+    const [tree, setTree] = useState<MerkleTree | null>(null);
+
+    useEffect(() => {
+        (async () => {
+            const treeInstance = await generateMerkleTree();
+            setTree(treeInstance);
+            // alert("check");
+        })();
+    }, []);
+
+
     return (
         <button
             onClick={() => {}}
