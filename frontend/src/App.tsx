@@ -1,7 +1,7 @@
 import { useMoralis } from "react-moralis";
 import "./App.css";
 import { contractAddresses } from "./constants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ConnectButton } from "@web3uikit/web3";
 import { networks } from "./constants/networks";
 import ImageCard from "./Components/ImageCard";
@@ -18,12 +18,23 @@ interface contractAddressesInterface {
 
 const { ethereum } = window as any;
 
+enum NFT {
+    Nico,
+    AzuraBlaze,
+    ChromaBot,
+    SunnyPaws,
+    RockingWhiskers,
+    MuscleMoo,
+}
+
 function App() {
     const addresses: contractAddressesInterface = contractAddresses;
     const { isWeb3Enabled, chainId: chainIdHex, Moralis } = useMoralis();
     const chainId: string = parseInt(chainIdHex!).toString();
     const nftContractAddress =
         chainId in addresses ? addresses[chainId][0] : null;
+
+    const [nft, setNFT] = useState<NFT | null>(null);
 
     useEffect(() => {}, [isWeb3Enabled]);
 
@@ -69,21 +80,62 @@ function App() {
                 One-of-a-Kind NFT Digital Critters
             </h3>
             <div className="flex mx-16 mt-8">
-                <ImageCard title="Nico" imageSource={Nico} />
-                <ImageCard title="Azura Blaze" imageSource={AzuraBlaze} />
-                <ImageCard title="Chroma Bot" imageSource={ChromaBot} />
-                <ImageCard title="Sunny Paws" imageSource={SunnyPaws} />
+                <ImageCard
+                    title="Nico"
+                    imageSource={Nico}
+                    isSelected={nft == NFT.Nico}
+                    onClick={() => {
+                        setNFT(NFT.Nico);
+                    }}
+                />
+                <ImageCard
+                    title="Azura Blaze"
+                    imageSource={AzuraBlaze}
+                    isSelected={nft == NFT.AzuraBlaze}
+                    onClick={() => {
+                        setNFT(NFT.AzuraBlaze);
+                    }}
+                />
+                <ImageCard
+                    title="Chroma Bot"
+                    imageSource={ChromaBot}
+                    isSelected={nft == NFT.ChromaBot}
+                    onClick={() => {
+                        setNFT(NFT.ChromaBot);
+                    }}
+                />
+                <ImageCard
+                    title="Sunny Paws"
+                    imageSource={SunnyPaws}
+                    isSelected={nft == NFT.SunnyPaws}
+                    onClick={() => {
+                        setNFT(NFT.SunnyPaws);
+                    }}
+                />
                 <ImageCard
                     title="Rocking Whiskers"
                     imageSource={RockingWhiskers}
+                    isSelected={nft == NFT.RockingWhiskers}
+                    onClick={() => {
+                        setNFT(NFT.RockingWhiskers);
+                    }}
                 />
-                <ImageCard title="Muscle Moo" imageSource={MuscleMoo} />
+                <ImageCard
+                    title="Muscle Moo"
+                    imageSource={MuscleMoo}
+                    isSelected={nft == NFT.MuscleMoo}
+                    onClick={() => {
+                        setNFT(NFT.MuscleMoo);
+                    }}
+                />
             </div>
-
             <div className="mt-16 text-white">
                 {isWeb3Enabled ? (
                     nftContractAddress ? (
-                        <button className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-24 py-4 text-xl text-white font-bold rounded-lg">
+                        <button
+                            onClick={() => alert(nft)}
+                            className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-24 py-4 text-xl text-white font-bold rounded-lg"
+                        >
                             Mint
                         </button>
                     ) : (
