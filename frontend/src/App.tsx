@@ -4,6 +4,13 @@ import { contractAddresses } from "./constants";
 import { useEffect } from "react";
 import { ConnectButton } from "@web3uikit/web3";
 import { networks } from "./constants/networks";
+import ImageCard from "./Components/ImageCard";
+import Nico from "./assets/images/Nico.png";
+import AzuraBlaze from "./assets/images/Azura_Blaze.png";
+import ChromaBot from "./assets/images/Chroma_Bot.png";
+import SunnyPaws from "./assets/images/Sunny_Paws.png";
+import RockingWhiskers from "./assets/images/Rocking_Whiskers.png";
+import MuscleMoo from "./assets/images/Muscle_Moo.png";
 
 interface contractAddressesInterface {
     [key: string]: string[];
@@ -45,7 +52,7 @@ function App() {
 
     return (
         <div className="flex flex-col justify-start items-center h-screen">
-            <div className="flex items-center mt-16 w-full">
+            <div className="flex items-center mt-12 w-full">
                 <div className="w-1/3"></div>
                 <h1 className="font-extrabold text-transparent text-7xl bg-clip-text bg-gradient-to-r from-[rgb(96,198,87)] to-[#35aee2]">
                     Digital Critters
@@ -61,10 +68,22 @@ function App() {
                 Experience the Future of Collecting with our Unique and
                 One-of-a-Kind NFT Digital Critters
             </h3>
-            <div className="mt-36 text-white">
+            <div className="flex mx-16 mt-8">
+                <ImageCard title="Nico" imageSource={Nico} />
+                <ImageCard title="Azura Blaze" imageSource={AzuraBlaze} />
+                <ImageCard title="Chroma Bot" imageSource={ChromaBot} />
+                <ImageCard title="Sunny Paws" imageSource={SunnyPaws} />
+                <ImageCard
+                    title="Rocking Whiskers"
+                    imageSource={RockingWhiskers}
+                />
+                <ImageCard title="Muscle Moo" imageSource={MuscleMoo} />
+            </div>
+
+            <div className="mt-16 text-white">
                 {isWeb3Enabled ? (
                     nftContractAddress ? (
-                        <button className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-24 py-4 text-xl text-white font-bold rounded-lg mb-24">
+                        <button className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-24 py-4 text-xl text-white font-bold rounded-lg">
                             Mint
                         </button>
                     ) : (
