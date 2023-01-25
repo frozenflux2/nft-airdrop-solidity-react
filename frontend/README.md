@@ -1,4 +1,4 @@
-# Digital Critters Collection NFT Collection Frontend
+# Digital Critters NFT Collection Frontend
 
 ## Execution Instructions
 
