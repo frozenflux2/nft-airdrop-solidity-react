@@ -16,6 +16,12 @@ interface Props {
     treeInstance: MerkleTree | null;
 }
 
+interface ProviderRpcError extends Error {
+    message: string;
+    code: number;
+    data?: unknown;
+}
+
 function MintButton(props: Props) {
     const dispatch = useNotification();
     const { account } = useMoralis();
@@ -63,14 +69,17 @@ function MintButton(props: Props) {
             return;
         }
 
-        await preMintNFT({
-            onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
-            onError: (error) => {
-                setLoading(false);
-                handleErrors(error);
-            },
-        });
-        setLoading(true);
+        try {
+            await preMintNFT({
+                throwOnError: true,
+                onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
+                // onError: (error) => {
+                //     handleErrors(error);
+                // },
+            });
+        } catch (error: any) {
+            handleErrors(error);
+        }
     }
 
     function timeout(delay: number) {
@@ -78,7 +87,9 @@ function MintButton(props: Props) {
     }
 
     async function handleSuccess(tx: ContractTransaction): Promise<void> {
-        await tx.wait(1);
+        setLoading(true);
+
+        props.chainId == "31337" ? await tx.wait(1) : await tx.wait(6);
 
         // * add a waiting delay for hardhat network.
         if (props.chainId == "31337") {
@@ -86,7 +97,7 @@ function MintButton(props: Props) {
         }
 
         setLoading(false);
-        
+
         dispatch({
             type: "success",
             title: "NFT Minting Successful",
@@ -98,7 +109,7 @@ function MintButton(props: Props) {
         props.setNFTIndex(null);
     }
 
-    function handleErrors(error: Error) {
+    function handleErrors(error: any) {
         if (error.message.includes("User denied transaction signature.")) {
             showErrorNotification(
                 "Permission Denied",
@@ -106,15 +117,20 @@ function MintButton(props: Props) {
             );
         } else if (error.message.toLowerCase().includes("nonce too high")) {
             showErrorNotification("Invalid Nonce", "Reset your Metamask.");
-        } else if (error.message.includes("Internal JSON-RPC error.")) {
+        } else if (error.message.includes("NFTAirdrop__NFTAlreadyMinted")) {
             showErrorNotification(
-                "Transaction Failed",
-                "We apologize for the inconvenience. Please check the details of your transaction and try again."
+                "NFT Already Minted",
+                "You can only mint 1 NFT for each address."
             );
-            // execution reverted
+        } else if (error.message.includes("NFTAirdrop__NotInTheAllowlist")) {
+            showErrorNotification(
+                "Minting Denied",
+                "Unauthorized Attempt to Mint Restricted Resource. Only Allowed Addresses can Mint."
+            );
         } else {
             showErrorNotification(error.name, error.message);
         }
+        setLoading(false);
     }
 
     function showErrorNotification(title: string, message: string) {
