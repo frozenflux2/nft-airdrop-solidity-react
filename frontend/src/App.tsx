@@ -66,6 +66,7 @@ function App() {
                 {isWeb3Enabled ? (
                     nftContractAddress ? (
                         <MintButton
+                            chainId={chainId}
                             nftContractAddress={nftContractAddress}
                             nftIndex={nftIndex}
                             setNFTIndex={setNFTIndex}
