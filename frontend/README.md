@@ -1,4 +1,4 @@
-# Gold Sonic Cat NFT Collection Frontend
+# Digital Critters Collection NFT Collection Frontend
 
 ## Execution Instructions
 
