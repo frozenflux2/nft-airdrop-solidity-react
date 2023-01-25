@@ -34,8 +34,10 @@ function App() {
 
     useEffect(() => {
         (async () => {
-            const treeInstance = await generateMerkleTree();
-            setTree(treeInstance);
+            if (tree == null) {
+                const treeInstance = await generateMerkleTree();
+                setTree(treeInstance);
+            }
         })();
     }, []);
 
@@ -66,6 +68,7 @@ function App() {
                         <MintButton
                             nftContractAddress={nftContractAddress}
                             nftIndex={nftIndex}
+                            setNFTIndex={setNFTIndex}
                             treeInstance={tree}
                         />
                     ) : (

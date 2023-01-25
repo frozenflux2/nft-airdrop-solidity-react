@@ -11,6 +11,7 @@ import { keccak256 } from "ethers/lib/utils";
 interface Props {
     nftContractAddress: string;
     nftIndex: NFT | null;
+    setNFTIndex: React.Dispatch<React.SetStateAction<NFT | null>>;
     treeInstance: MerkleTree | null;
 }
 
@@ -78,6 +79,7 @@ function MintButton(props: Props) {
             icon: <AiFillBell />,
             position: "topR",
         });
+        props.setNFTIndex(null);
     }
 
     function handleErrors(error: Error) {
