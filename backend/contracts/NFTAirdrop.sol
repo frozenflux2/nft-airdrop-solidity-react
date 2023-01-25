@@ -16,7 +16,7 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
     uint256 private tokenCounter;
 
     // * this mapping will keep track of whether the address minted the NFT or not.
-    mapping(address => bool) public addressToNFTMinted;
+    mapping(address => bool) private addressToNFTMinted;
 
     // * EVENTS
     /**
@@ -87,5 +87,11 @@ contract NFTAirdrop is ERC721URIStorage, Ownable {
 
     function getTokenId() external view returns (uint256) {
         return tokenCounter;
+    }
+
+    function getAddressToNFTMintedStatus(
+        address caller
+    ) external view returns (bool) {
+        return addressToNFTMinted[caller];
     }
 }
