@@ -3,12 +3,13 @@ import MerkleTree from "merkletreejs";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { abi } from "../constants";
 import { NFT } from "../App";
-import { useNotification } from "@web3uikit/core";
+import { Loading, useNotification } from "@web3uikit/core";
 import { ContractTransaction } from "ethers";
 import { AiFillBell } from "react-icons/ai";
 import { keccak256 } from "ethers/lib/utils";
 
 interface Props {
+    chainId: string;
     nftContractAddress: string;
     nftIndex: NFT | null;
     setNFTIndex: React.Dispatch<React.SetStateAction<NFT | null>>;
@@ -20,6 +21,7 @@ function MintButton(props: Props) {
     const { account } = useMoralis();
 
     const [proof, setProof] = useState<string[] | undefined>();
+    let [loading, setLoading] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -64,13 +66,27 @@ function MintButton(props: Props) {
         await preMintNFT({
             onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
             onError: (error) => {
+                setLoading(false);
                 handleErrors(error);
             },
         });
+        setLoading(true);
+    }
+
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
     }
 
     async function handleSuccess(tx: ContractTransaction): Promise<void> {
         await tx.wait(1);
+
+        // * add a waiting delay for hardhat network.
+        if (props.chainId == "31337") {
+            await timeout(5000);
+        }
+
+        setLoading(false);
+        
         dispatch({
             type: "success",
             title: "NFT Minting Successful",
@@ -95,6 +111,7 @@ function MintButton(props: Props) {
                 "Transaction Failed",
                 "We apologize for the inconvenience. Please check the details of your transaction and try again."
             );
+            // execution reverted
         } else {
             showErrorNotification(error.name, error.message);
         }
@@ -111,12 +128,25 @@ function MintButton(props: Props) {
     }
 
     return (
-        <button
-            onClick={handleOnPreMint}
-            className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-24 py-4 text-xl text-white font-bold rounded-lg"
-        >
-            Mint
-        </button>
+        <div className="flex flex-col items-center">
+            <button
+                className="bg-gradient-to-r from-[#60c657] to-[#35aee2] px-24 py-4 text-xl text-white font-bold rounded-lg mb-8"
+                onClick={handleOnPreMint}
+                disabled={loading}
+            >
+                Mint
+            </button>
+            {loading && (
+                <Loading
+                    direction="bottom"
+                    fontSize={16}
+                    size={12}
+                    spinnerColor="#35aee2"
+                    spinnerType="wave"
+                    text="Transaction pending..."
+                />
+            )}
+        </div>
     );
 }
 
