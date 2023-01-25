@@ -1,23 +1,43 @@
 import { useMoralis } from "react-moralis";
 import "./App.css";
 import { contractAddresses } from "./constants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ConnectButton } from "@web3uikit/web3";
 import NFTSRow from "./Components/NFTSRow";
 import MintButton from "./Components/MintButton";
 import SwitchNetworkButton from "./Components/SwitchNetworkButton";
 import { generateMerkleTree } from "./utils/generate-merkle-tree";
+import MerkleTree from "merkletreejs";
 
 interface contractAddressesInterface {
     [key: string]: string[];
 }
 
+export enum NFT {
+    Nico,
+    AzuraBlaze,
+    ChromaBot,
+    SunnyPaws,
+    RockingWhiskers,
+    MuscleMoo,
+}
+
 function App() {
     const addresses: contractAddressesInterface = contractAddresses;
-    const { isWeb3Enabled, chainId: chainIdHex, Moralis } = useMoralis();
+    const { isWeb3Enabled, chainId: chainIdHex } = useMoralis();
     const chainId: string = parseInt(chainIdHex!).toString();
     const nftContractAddress =
         chainId in addresses ? addresses[chainId][0] : null;
+
+    const [nftIndex, setNFTIndex] = useState<NFT | null>(null);
+    const [tree, setTree] = useState<MerkleTree | null>(null);
+
+    useEffect(() => {
+        (async () => {
+            const treeInstance = await generateMerkleTree();
+            setTree(treeInstance);
+        })();
+    }, []);
 
     useEffect(() => {}, [isWeb3Enabled]);
 
@@ -39,11 +59,15 @@ function App() {
                 Experience the Future of Collecting with our Unique and
                 One-of-a-Kind NFT Digital Critters
             </h3>
-            <NFTSRow />
+            <NFTSRow nftIndex={nftIndex} setNFTIndex={setNFTIndex} />
             <div className="mt-16 text-white">
                 {isWeb3Enabled ? (
                     nftContractAddress ? (
-                        <MintButton />
+                        <MintButton
+                            nftContractAddress={nftContractAddress}
+                            nftIndex={nftIndex}
+                            treeInstance={tree}
+                        />
                     ) : (
                         <SwitchNetworkButton />
                     )
