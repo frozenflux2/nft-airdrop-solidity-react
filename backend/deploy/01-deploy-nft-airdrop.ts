@@ -7,7 +7,14 @@ import { generateMerkleTree } from "../scripts/generate-merkle-tree";
 import MerkleTree from "merkletreejs";
 
 // * specify the nft metadata uris ipfs hashes. Read the README.md file to know more about it.
-const metadataIpfsHashes: string[] = [];
+const metadataIpfsHashes: string[] = [
+    "QmUDDkTccKaTzLMcNAXNFkZdZTBaYsfD71nXQrhgCPEqLu",
+    "QmQn2JWskSmQTsQsYpyM6ZAc1UXmhK5iBH1QPeifSS6328",
+    "QmWwJL8Gt52XvipKLGvFLCwkBtFuV4SZwbR8hMRx2pKPx3",
+    "QmPYg1PvGiE5QKh9NZXLNciW8oTBRSpiKpZf5Qbk4o1e4q",
+    "QmWUFF9joFTiyECgWZAiRr83aA5khzY3gkKc1PZUS2qDU2",
+    "QmXvGNQw2fbky5XgqL7uoXKmbURQpyCJcgU8sQHuoHMQn6",
+];
 
 const deployNFTAirdrop: DeployFunction = async (
     hre: HardhatRuntimeEnvironment
