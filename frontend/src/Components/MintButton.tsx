@@ -16,12 +16,6 @@ interface Props {
     treeInstance: MerkleTree | null;
 }
 
-interface ProviderRpcError extends Error {
-    message: string;
-    code: number;
-    data?: unknown;
-}
-
 function MintButton(props: Props) {
     const dispatch = useNotification();
     const { account } = useMoralis();
@@ -44,6 +38,16 @@ function MintButton(props: Props) {
             _tokenUriIndex: props.nftIndex,
         },
     });
+
+    const { runContractFunction: getAddressToNFTMintedStatus } =
+        useWeb3Contract({
+            abi: abi,
+            contractAddress: props.nftContractAddress,
+            functionName: "getAddressToNFTMintedStatus",
+            params: {
+                caller: account?.toString(),
+            },
+        });
 
     async function generateProof() {
         if (account != null) {
@@ -89,7 +93,7 @@ function MintButton(props: Props) {
     async function handleSuccess(tx: ContractTransaction): Promise<void> {
         setLoading(true);
 
-        props.chainId == "31337" ? await tx.wait(1) : await tx.wait(6);
+        await tx.wait(1);
 
         // * add a waiting delay for hardhat network.
         if (props.chainId == "31337") {
@@ -109,7 +113,8 @@ function MintButton(props: Props) {
         props.setNFTIndex(null);
     }
 
-    function handleErrors(error: any) {
+    async function handleErrors(error: any) {
+        setLoading(false);
         if (error.message.includes("User denied transaction signature.")) {
             showErrorNotification(
                 "Permission Denied",
@@ -127,10 +132,24 @@ function MintButton(props: Props) {
                 "Minting Denied",
                 "Unauthorized Attempt to Mint Restricted Resource. Only Allowed Addresses can Mint."
             );
+        } else if (error.message.includes("execution reverted")) {
+            const alreadyMinted =
+                (await getAddressToNFTMintedStatus()) as boolean;
+
+            if (proof?.length != undefined && proof?.length <= 0) {
+                showErrorNotification(
+                    "Minting Denied",
+                    "Unauthorized Attempt to Mint Restricted Resource. Only Allowed Addresses can Mint."
+                );
+            } else if (alreadyMinted) {
+                showErrorNotification(
+                    "NFT Already Minted",
+                    "You can only mint 1 NFT for each address."
+                );
+            }
         } else {
             showErrorNotification(error.name, error.message);
         }
-        setLoading(false);
     }
 
     function showErrorNotification(title: string, message: string) {
