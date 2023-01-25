@@ -106,7 +106,7 @@ function MintButton(props: Props) {
             type: "success",
             title: "NFT Minting Successful",
             message:
-                " Your NFT has been minted successfully and is now available for use.",
+                "Your NFT has been minted successfully and is now available for use.",
             icon: <AiFillBell />,
             position: "topR",
         });
